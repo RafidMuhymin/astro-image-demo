@@ -21,12 +21,12 @@ declare interface ComponentProps {
   objectPosition?: string;
   layout?: "constrained" | "fixed" | "full";
   placeholder?: "dominantColor" | "blurred" | "tracedSVG" | "none";
-  artDirections?: (ImageToolsConfigs & {
-    src?: string;
-    media?: string;
+  artDirections?: ({
+    src: string;
+    media: string;
     breakpoints?: number | number[];
     placeholder?: "dominantColor" | "blurred" | "tracedSVG" | "none";
-  })[];
+  } & ImageToolsConfigs)[];
 }
 
 declare interface ImageToolsConfigs {
