@@ -1,0 +1,14 @@
+---
+import src from "../images/elva-800w.jpg";
+import secondSrc from "../images/elva-480w-close-portrait.jpg";
+import Image from "../components/Image.astro";
+---
+
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Hello World!</h1>
+    <Image {src} preload="webp" placeholder="dominantColor" />
+    <Image src={secondSrc} preload="webp" placeholder="dominantColor" />
+  </body>
+</html>

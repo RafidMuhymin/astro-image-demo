@@ -1,0 +1,117 @@
+---
+import type ImageConfig from "/src/interfaces/ImageConfig.ts";
+import getImage from "../utils/getImage.js";
+import "../styles/style.scss";
+
+const {
+  src,
+  alt,
+  caption = "figcaption",
+  preload,
+  loading = preload ? "eager" : "lazy",
+  decoding = "async",
+  breakpoints,
+  objectFit = "cover",
+  objectPosition,
+  layout = "constrained",
+  placeholder = "blurred",
+  artDirections,
+  format = ["webp", "avif"],
+  ...configOptions
+} = Astro.props as ImageConfig;
+
+console.time("getImage");
+const { sources, fallback, sizes } = await getImage(
+  src,
+  format,
+  breakpoints,
+  placeholder,
+  artDirections,
+  configOptions
+);
+console.timeEnd("getImage");
+
+console.log(fallback);
+
+const { width, height } = sizes;
+
+const imagesrcset =
+  preload && sources.find(({ format: fmt }) => fmt === preload)?.srcset;
+const imagesizes = `(min-width: ${width}px) ${width}px, 100vw`;
+---
+
+{preload && (
+  <link
+    rel="preload"
+    as="image"
+    imagesrcset={imagesrcset}
+    imagesizes={imagesizes}
+  />
+)}
+
+{caption && `<figure class="astro-image-figure">`}
+
+<div
+  class={`astro-image-container astro-image-${layout}`}
+  style={layout === "fixed" && `width: ${width}px; height: ${height}px;`}
+>
+  {layout === "constrained" && (
+    <svg
+      {...sizes}
+      aria-hidden="true"
+      style="max-width: 100%; display: block; position: static"
+    ></svg>
+  )}
+
+  {layout === "full" && (
+    <div
+      aria-hidden="true"
+      style={`padding-top: ${(height * 100) / width}%;`}
+    ></div>
+  )}
+
+  <picture>
+    {sources.map(({ main, format, src, srcset }) =>
+      main ? (
+        <img
+          src={src}
+          alt={alt}
+          {...sizes}
+          srcset={srcset}
+          loading={loading}
+          sizes={imagesizes}
+          decoding={decoding}
+          class="astro-image"
+          style={`object-fit: ${objectFit};${
+            objectPosition ? `object-position: ${objectPosition};` : ""
+          }`}
+          onload={
+            "parentElement.parentElement.lastElementChild.style.opacity = 0;"
+          }
+        />
+      ) : (
+        <source type={`image/${format}`} srcset={srcset} sizes={imagesizes} />
+      )
+    )}
+  </picture>
+
+  <img
+    {...sizes}
+    src={fallback}
+    aria-hidden="true"
+    {decoding}
+    class="astro-image-fallback"
+    style={`object-fit: ${objectFit};${
+      objectPosition ? `object-position: ${objectPosition};` : ""
+    }`}
+  />
+</div>
+
+{caption && <figcaption class="astro-image-figcaption">{caption}</figcaption>}
+{caption && `</figure>`}
+
+<style global>
+  div {
+    color: inherit;
+  }
+</style>

@@ -1,0 +1,35 @@
+.astro-image-figure {
+  margin: 0;
+}
+
+.astro-image-figcaption {
+  padding: 1rem 0;
+  font-style: italic;
+  text-align: center;
+}
+
+.astro-image-container {
+  position: relative;
+  overflow: hidden;
+  img {
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    position: absolute;
+    transform: translateZ(0);
+  }
+}
+
+.astro-image-constrained {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.astro-image-fallback {
+  opacity: 1;
+  transition: opacity 500ms;
+}
