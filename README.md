@@ -1,4 +1,4 @@
-# Demonstration of built-in Image Optimization of the Astro JS framework
+# Astro JS Image Optimization Demo
 
 This is a demonstration of the built-in `<Image>` component of the Astro JS framework. Clone this repository and run `yarn install` to install the dependencies. Then run `yarn start` to start the demo.
 
