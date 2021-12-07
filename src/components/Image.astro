@@ -20,7 +20,9 @@ const {
   ...configOptions
 } = Astro.props as ImageConfig;
 
-console.time("Image optimized in");
+const label = `Image at ${src} optimized in`;
+
+console.time(label);
 const { sources, fallback, sizes } = await getImage(
   src,
   format,
@@ -29,7 +31,7 @@ const { sources, fallback, sizes } = await getImage(
   artDirections,
   configOptions
 );
-console.timeEnd("Image optimized in");
+console.timeEnd(label);
 
 const { width, height } = sizes;
 
