@@ -63,14 +63,11 @@ export default async function (...args) {
   // Stringify rest.aspect because the applyTransforms function requires it to be a string
   rest.aspect = aspect.toString();
 
-  // Sort the breakpoints in ascending order
-  Array.isArray(breakpoints) && breakpoints.sort((a, b) => a - b);
+  const requiredBreakpoints = Array.isArray(breakpoints)
+    ? breakpoints.slice().sort((a, b) => a - b)
+    : getBreakpoints(breakpoints, width || imageWidth);
 
-  // Generate breakpoints
-  (!breakpoints || typeof breakpoints === "number") &&
-    (breakpoints = getBreakpoints(breakpoints, width || imageWidth));
-
-  const maxWidth = breakpoints.at(-1);
+  const maxWidth = requiredBreakpoints.at(-1);
 
   const sources = await Promise.all(
     formats.map(async (format) => {
@@ -78,7 +75,9 @@ export default async function (...args) {
 
       // Generate the srcset
       const { default: srcset } = await import(
-        `${src}?srcset&w=${breakpoints.join(";")}&format=${format}${params}`
+        `${src}?srcset&w=${requiredBreakpoints.join(
+          ";"
+        )}&format=${format}${params}`
       );
 
       return {
@@ -104,14 +103,14 @@ export default async function (...args) {
   sources.unshift(...artDirectedSources.sources);
 
   // Generate fallback image
-  const fallback = await getFallbackImage(
+  const fallbackSrc = await getFallbackImage(
     placeholder,
     image,
     imageFormat,
     rest
   );
 
-  const fallbacks = [...artDirectedSources.fallbacks, { fallback }];
+  const fallbacks = [...artDirectedSources.fallbacks, { src: fallbackSrc }];
 
   // Generate the sizes for browser
   const sizes = {

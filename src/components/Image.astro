@@ -102,13 +102,13 @@ const imagesizes = `(min-width: ${width}px) ${width}px, 100vw`;
 
   {fallbacks && (
     <picture>
-      {fallbacks.map(({ media, fallback }) =>
+      {fallbacks.map(({ media, src }) =>
         media ? (
-          <source media={media} srcset={fallback} />
+          <source media={media} srcset={src} />
         ) : (
           <img
             {...sizes}
-            src={fallback}
+            src={src}
             aria-hidden="true"
             decoding={decoding}
             class="astro-image-fallback"
