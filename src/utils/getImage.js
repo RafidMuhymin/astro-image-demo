@@ -101,8 +101,6 @@ export default async function (...args) {
     rest
   );
 
-  console.log(artDirectedSources);
-
   sources.unshift(...artDirectedSources.sources);
 
   // Generate fallback image
