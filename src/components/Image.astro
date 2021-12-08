@@ -15,7 +15,7 @@ const {
   objectPosition,
   layout = "constrained",
   placeholder = "blurred",
-  artDirections,
+  artDirectives,
   format = ["avif", "webp"],
   ...configOptions
 } = Astro.props as ImageConfig;
@@ -28,7 +28,7 @@ const { sources, fallbacks, sizes } = await getImage(
   format,
   breakpoints,
   placeholder,
-  artDirections,
+  artDirectives,
   configOptions
 );
 console.timeEnd(label);

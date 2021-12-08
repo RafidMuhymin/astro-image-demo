@@ -6,7 +6,7 @@ import stringifyParams from "./stringifyParams";
 const { loadImage } = module.createRequire(import.meta.url)("imagetools-core");
 
 export default async function getArtDirectedSources(
-  artDirections = [],
+  artDirectives = [],
   placeholder,
   format,
   breakpoints,
@@ -15,7 +15,7 @@ export default async function getArtDirectedSources(
   const sources = [];
   const fallbacks = [];
 
-  for (const { src, media } of artDirections) {
+  for (const { src, media } of artDirectives) {
     const image = loadImage("." + src);
     const { width: imageWidth, format: imageFormat } = await image.metadata();
     const requiredBreakpoints = getBreakpoints(breakpoints, imageWidth);

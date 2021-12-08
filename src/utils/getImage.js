@@ -30,7 +30,7 @@ export default async function (...args) {
     return optimizedImages.get(hash);
   }
 
-  let [src, format, breakpoints, placeholder, artDirections, configOptions] =
+  let [src, format, breakpoints, placeholder, artDirectives, configOptions] =
     args;
 
   // Load the image
@@ -94,7 +94,7 @@ export default async function (...args) {
 
   // Generate Art Directed Images
   const artDirectedSources = await getArtDirectedSources(
-    artDirections,
+    artDirectives,
     placeholder,
     format,
     breakpoints,
