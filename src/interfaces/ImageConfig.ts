@@ -16,7 +16,13 @@ declare interface ComponentProps {
   preload?: boolean | format;
   loading?: "lazy" | "eager" | "auto" | null;
   decoding?: "async" | "sync" | "auto" | null;
-  breakpoints?: number | number[];
+  breakpoints?:
+    | number[]
+    | {
+        count?: number;
+        minWidth?: number;
+        maxWidth?: number;
+      };
   objectFit?: "fill" | "contain" | "cover" | "none" | "scale-down";
   objectPosition?: string;
   layout?: "constrained" | "fixed" | "full";

@@ -18,7 +18,6 @@ export default async function getArtDirectedSources(
   for (const { src, media } of artDirectives) {
     const image = loadImage("." + src);
     const { width: imageWidth, format: imageFormat } = await image.metadata();
-    console.log(breakpoints, imageWidth);
     const requiredBreakpoints = getBreakpoints(breakpoints, imageWidth);
     const params = stringifyParams(rest);
     const formats = format.concat(imageFormat);

@@ -63,11 +63,9 @@ export default async function (...args) {
   // Stringify rest.aspect because the applyTransforms function requires it to be a string
   rest.aspect = aspect.toString();
 
-  const requiredBreakpoints = Array.isArray(breakpoints)
-    ? breakpoints.slice().sort((a, b) => a - b)
-    : getBreakpoints(breakpoints, width || imageWidth);
+  breakpoints = getBreakpoints(breakpoints, width || imageWidth);
 
-  const maxWidth = requiredBreakpoints.at(-1);
+  const maxWidth = breakpoints.at(-1);
 
   const sources = await Promise.all(
     formats.map(async (format) => {
@@ -75,9 +73,7 @@ export default async function (...args) {
 
       // Generate the srcset
       const { default: srcset } = await import(
-        `${src}?srcset&w=${requiredBreakpoints.join(
-          ";"
-        )}&format=${format}${params}`
+        `${src}?srcset&w=${breakpoints.join(";")}&format=${format}${params}`
       );
 
       return {

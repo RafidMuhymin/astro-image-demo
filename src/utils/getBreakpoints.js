@@ -1,10 +1,17 @@
-export default function getBreakpoints(n, max) {
-  let current = 320;
+export default function getBreakpoints(breakpoints, imageWidth) {
+  if (Array.isArray(breakpoints)) {
+    return breakpoints.sort((a, b) => a - b);
+  }
+
+  const { count, minWidth, maxWidth } = breakpoints || {};
+
+  let current = minWidth || 320;
+  const max = maxWidth || imageWidth;
+  n = count || max < 400 ? 1 : max < 640 ? 2 : 3;
+
   const diff = max - current;
   const breakPoints = [];
   let steps = 0;
-
-  n ||= max < 400 ? 1 : max < 640 ? 2 : 3;
 
   for (let i = 1; i < n; i++) {
     steps += i;
