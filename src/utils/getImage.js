@@ -2,6 +2,8 @@ import module from "module";
 import crypto from "crypto";
 import getFallbackImage from "./getFallbackImage";
 import getBreakpoints from "./getBreakpoints";
+import stringifyParams from "./stringifyParams";
+import getArtDirectedSources from "./getArtDirectedSources";
 const moduleRequire = module.createRequire(import.meta.url);
 const ImageTools = moduleRequire("imagetools-core");
 
@@ -61,56 +63,57 @@ export default async function (...args) {
   // Stringify rest.aspect because the applyTransforms function requires it to be a string
   rest.aspect = aspect.toString();
 
-  // Generate the required breakpoint widths
-  const requiredBreakpoints = Array.isArray(breakpoints)
-    ? breakpoints.sort((a, b) => a - b)
-    : getBreakpoints(breakpoints, width || imageWidth);
+  // Sort the breakpoints in ascending order
+  Array.isArray(breakpoints) && breakpoints.sort((a, b) => a - b);
 
-  const maxWidth = requiredBreakpoints.at(-1);
+  // Generate breakpoints
+  (!breakpoints || typeof breakpoints === "number") &&
+    (breakpoints = getBreakpoints(breakpoints, width || imageWidth));
+
+  const maxWidth = breakpoints.at(-1);
 
   const sources = await Promise.all(
     formats.map(async (format) => {
-      const keys = Object.keys(rest);
-
-      // Generate the params string
-      const params = keys.length
-        ? keys
-            .map((key) =>
-              Array.isArray(rest[key])
-                ? `&${key}=${rest[key].join(";")}`
-                : `&${key}=${rest[key]}`
-            )
-            .join("")
-        : "";
-
-      // Generate the src using the last breakpoint
-      const { default: imageSrc } = await import(
-        `${src}?w=${maxWidth}&format=${format}${params}`
-      );
+      const params = stringifyParams(rest);
 
       // Generate the srcset
       const { default: srcset } = await import(
-        `${src}?srcset&w=${requiredBreakpoints.join(
-          ";"
-        )}&format=${format}${params}`
+        `${src}?srcset&w=${breakpoints.join(";")}&format=${format}${params}`
       );
 
       return {
-        main: format === imageFormat ? true : false,
         format,
-        src: imageSrc,
+        src:
+          format === imageFormat &&
+          (await import(`${src}?w=${maxWidth}&format=${format}${params}`))
+            .default,
         srcset,
       };
     })
   );
 
-  // Generate the fallback
+  // Generate Art Directed Images
+  const artDirectedSources = await getArtDirectedSources(
+    artDirections,
+    placeholder,
+    format,
+    breakpoints,
+    rest
+  );
+
+  console.log(artDirectedSources);
+
+  sources.unshift(...artDirectedSources.sources);
+
+  // Generate fallback image
   const fallback = await getFallbackImage(
     placeholder,
     image,
     imageFormat,
     rest
   );
+
+  const fallbacks = [...artDirectedSources.fallbacks, { fallback }];
 
   // Generate the sizes for browser
   const sizes = {
@@ -120,7 +123,7 @@ export default async function (...args) {
 
   const imageData = {
     sources,
-    fallback,
+    fallbacks,
     sizes,
   };
 

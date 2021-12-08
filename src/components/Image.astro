@@ -16,14 +16,14 @@ const {
   layout = "constrained",
   placeholder = "blurred",
   artDirections,
-  format = ["webp", "avif"],
+  format = ["avif", "webp"],
   ...configOptions
 } = Astro.props as ImageConfig;
 
 const label = `Image at ${src} optimized in`;
 
 console.time(label);
-const { sources, fallback, sizes } = await getImage(
+const { sources, fallbacks, sizes } = await getImage(
   src,
   format,
   breakpoints,
@@ -71,8 +71,8 @@ const imagesizes = `(min-width: ${width}px) ${width}px, 100vw`;
   )}
 
   <picture>
-    {sources.map(({ main, format, src, srcset }) =>
-      main ? (
+    {sources.map(({ media, format, src, srcset }) =>
+      src ? (
         <img
           src={src}
           alt={alt}
@@ -86,32 +86,41 @@ const imagesizes = `(min-width: ${width}px) ${width}px, 100vw`;
             objectPosition ? `object-position: ${objectPosition};` : ""
           }`}
           onload={
-            "parentElement.parentElement.lastElementChild.style.opacity = 0;"
+            "parentElement.parentElement.lastElementChild.lastElementChild.style.opacity = 0;"
           }
         />
       ) : (
-        <source type={`image/${format}`} srcset={srcset} sizes={imagesizes} />
+        <source
+          media={media}
+          type={`image/${format}`}
+          srcset={srcset}
+          sizes={imagesizes}
+        />
       )
     )}
   </picture>
 
-  <img
-    {...sizes}
-    src={fallback}
-    aria-hidden="true"
-    {decoding}
-    class="astro-image-fallback"
-    style={`object-fit: ${objectFit};${
-      objectPosition ? `object-position: ${objectPosition};` : ""
-    }`}
-  />
+  {fallbacks && (
+    <picture>
+      {fallbacks.map(({ media, fallback }) =>
+        media ? (
+          <source media={media} srcset={fallback} />
+        ) : (
+          <img
+            {...sizes}
+            src={fallback}
+            aria-hidden="true"
+            decoding={decoding}
+            class="astro-image-fallback"
+            style={`object-fit: ${objectFit};${
+              objectPosition ? `object-position: ${objectPosition};` : ""
+            }`}
+          />
+        )
+      )}
+    </picture>
+  )}
 </div>
 
 {caption && <figcaption class="astro-image-figcaption">{caption}</figcaption>}
 {caption && `</figure>`}
-
-<style global>
-  div {
-    color: inherit;
-  }
-</style>
