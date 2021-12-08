@@ -22,6 +22,8 @@ export const createImageTools = () => {
       if (!this.modifiedImages.has(asset)) {
         const image = this.getImageByAsset(asset);
 
+        console.log(asset.params);
+
         const { transforms } = generateTransforms(asset.params, builtins);
 
         this.modifiedImages.set(
