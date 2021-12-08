@@ -1,6 +1,4 @@
 ---
-import src from "../images/elva-800w.jpg";
-import second from "../images/elva-480w-close-portrait.jpg";
 import Image from "../components/Image.astro";
 ---
 
@@ -9,12 +7,12 @@ import Image from "../components/Image.astro";
   <body>
     <h1>Hello World!</h1>
     <Image
-      {src}
+      src="/src/images/elva-800w.jpg"
       alt="A father holiding his beloved daughter in his arms"
-      artDirections={[
+      artDirectives={[
         {
           media: "(max-width: 480px)",
-          src: second,
+          src: "/src/images/elva-480w-close-portrait.jpg",
         },
       ]}
     />
