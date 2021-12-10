@@ -1,15 +1,14 @@
-import module from "module";
-import getBreakpoints from "./getBreakpoints";
+import { loadImage } from "./imagetools-core";
+import getConfigOptions from "./getConfigOptions";
 import getFallbackImage from "./getFallbackImage";
-import stringifyParams from "./stringifyParams";
 
-const { loadImage } = module.createRequire(import.meta.url)("imagetools-core");
-
-export default async function getArtDirectedSources(
+export default async function getArtDirectedImages(
   artDirectives = [],
   placeholder,
   format,
   breakpoints,
+  fallbackFormat,
+  includeSourceFormat,
   rest
 ) {
   const sources = [];
@@ -18,9 +17,16 @@ export default async function getArtDirectedSources(
   for (const { src, media } of artDirectives) {
     const image = loadImage("." + src);
     const { width: imageWidth, format: imageFormat } = await image.metadata();
-    const requiredBreakpoints = getBreakpoints(breakpoints, imageWidth);
-    const params = stringifyParams(rest);
-    const formats = format.concat(imageFormat);
+
+    const { formats, requiredBreakpoints, params } = getConfigOptions(
+      imageWidth,
+      breakpoints,
+      format,
+      imageFormat,
+      fallbackFormat,
+      includeSourceFormat,
+      rest
+    );
 
     for (const format of formats) {
       const { default: srcset } = await import(

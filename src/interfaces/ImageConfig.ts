@@ -27,6 +27,8 @@ declare interface ComponentProps {
   objectPosition?: string;
   layout?: "constrained" | "fixed" | "full";
   placeholder?: "dominantColor" | "blurred" | "tracedSVG" | "none";
+  fallbackFormat: boolean;
+  includeSourceFormat: boolean;
   artDirectives?: ({
     src: string;
     media: string;
@@ -36,7 +38,7 @@ declare interface ComponentProps {
 }
 
 declare interface ImageToolsConfigs {
-  format?: format | format[];
+  format?: [] | format | format[];
   flip?: boolean;
   flop?: boolean;
   invert?: boolean;

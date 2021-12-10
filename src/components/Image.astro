@@ -17,6 +17,8 @@ const {
   placeholder = "blurred",
   artDirectives,
   format = ["avif", "webp"],
+  fallbackFormat,
+  includeSourceFormat = true,
   ...configOptions
 } = Astro.props as ImageConfig;
 
@@ -29,6 +31,8 @@ const { sources, fallbacks, sizes } = await getImage(
   breakpoints,
   placeholder,
   artDirectives,
+  fallbackFormat,
+  includeSourceFormat,
   configOptions
 );
 console.timeEnd(label);

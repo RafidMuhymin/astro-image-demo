@@ -1,21 +1,22 @@
-import module from "module";
 import util from "util";
+import crypto from "crypto";
 import potrace from "potrace";
+import {
+  applyTransforms,
+  builtins,
+  generateTransforms,
+} from "./imagetools-core";
 
-const moduleRequire = module.createRequire(import.meta.url);
-const { generateTransforms, applyTransforms, builtins } =
-  moduleRequire("imagetools-core");
+const getTracedSVG = async (image) => {
+  const traceSVG = util.promisify(potrace.trace);
+  const svg = await traceSVG(await image.toBuffer());
+  return `data:image/svg+xml;utf8,${svg}`;
+};
 
 const getDominantColor = async (image) => {
   const { dominant } = await image.stats();
   const { r, g, b } = dominant;
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" style="background: rgb(${r},${g},${b})"></svg>`;
-  return `data:image/svg+xml;utf8,${svg}`;
-};
-
-const getTracedSVG = async (image) => {
-  const traceSVG = util.promisify(potrace.trace);
-  const svg = await traceSVG(await image.toBuffer());
   return `data:image/svg+xml;utf8,${svg}`;
 };
 
@@ -28,12 +29,23 @@ const getBlurredFallback = async (image, format, rest) => {
   return dataUri;
 };
 
+const fallbackImages = new Map();
+
 export default async function getFallbackImage(
   placeholder,
   image,
   format,
   rest
 ) {
+  const hash = crypto
+    .createHash("sha256")
+    .update(JSON.stringify(arguments))
+    .digest("hex");
+
+  if (fallbackImages.has(hash)) {
+    return fallbackImages.get(hash);
+  }
+
   switch (placeholder) {
     case "blurred":
       return await getBlurredFallback(image, format, rest);
