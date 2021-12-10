@@ -4,6 +4,8 @@ import getFallbackImage from "./getFallbackImage";
 import getBreakpoints from "./getBreakpoints";
 import stringifyParams from "./stringifyParams";
 import getArtDirectedSources from "./getArtDirectedSources";
+// import astroConfig from "../../astro.config.mjs";
+
 const moduleRequire = module.createRequire(import.meta.url);
 const ImageTools = moduleRequire("imagetools-core");
 
@@ -18,11 +20,18 @@ const {
 
 const optimizedImages = new Map();
 
-export default async function (...args) {
+export default async function (
+  src,
+  format,
+  breakpoints,
+  placeholder,
+  artDirectives,
+  configOptions
+) {
   // Create sha256 hash of arguments
   const hash = crypto
     .createHash("sha256")
-    .update(JSON.stringify(args))
+    .update(JSON.stringify(arguments))
     .digest("hex");
 
   // Check if image is already in cache
@@ -30,11 +39,13 @@ export default async function (...args) {
     return optimizedImages.get(hash);
   }
 
-  let [src, format, breakpoints, placeholder, artDirectives, configOptions] =
-    args;
+  const { width, height, aspect, ...rest } = configOptions;
 
-  // Load the image
-  const image = loadImage("." + src);
+  // Load and resize the image if necessary
+  const { image } = await applyTransforms(
+    generateTransforms({ width, height, aspect }, builtins).transforms,
+    loadImage("." + src)
+  );
 
   const {
     width: imageWidth,
@@ -42,28 +53,10 @@ export default async function (...args) {
     format: imageFormat,
   } = await image.metadata();
 
-  // If the format is set with a string, we need to convert it to an array
-  Array.isArray(format) ? format : [format];
+  // Generate the required formats
+  const formats = [...new Set([format, imageFormat].flat().filter(Boolean))];
 
-  // Add the original image format to the formats array
-  const formats = format.concat(imageFormat);
-
-  let { width, height, ...rest } = configOptions;
-  let { aspect = imageWidth / imageHeight } = rest;
-
-  // Calculate width if not provided when height is provided
-  height && (width ||= Math.round(height * aspect));
-
-  // Calculate height if not provided when width is provided
-  width && (height ||= Math.round(width / aspect));
-
-  // If width & height both are provided then aspectRatio is ignored and assigned their proportional value
-  width && height && (aspect = width / height);
-
-  // Stringify rest.aspect because the applyTransforms function requires it to be a string
-  rest.aspect = aspect.toString();
-
-  breakpoints = getBreakpoints(breakpoints, width || imageWidth);
+  breakpoints = getBreakpoints(breakpoints, imageWidth);
 
   const maxWidth = breakpoints.at(-1);
 
@@ -71,7 +64,6 @@ export default async function (...args) {
     formats.map(async (format) => {
       const params = stringifyParams(rest);
 
-      // Generate the srcset
       const { default: srcset } = await import(
         `${src}?srcset&w=${breakpoints.join(";")}&format=${format}${params}`
       );
@@ -111,7 +103,7 @@ export default async function (...args) {
   // Generate the sizes for browser
   const sizes = {
     width: maxWidth,
-    height: Math.round(maxWidth / aspect),
+    height: Math.round(maxWidth / (aspect || imageWidth / imageHeight)),
   };
 
   const imageData = {
