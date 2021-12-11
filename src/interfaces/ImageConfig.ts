@@ -27,8 +27,8 @@ declare interface ComponentProps {
   objectPosition?: string;
   layout?: "constrained" | "fixed" | "full";
   placeholder?: "dominantColor" | "blurred" | "tracedSVG" | "none";
-  fallbackFormat: boolean;
-  includeSourceFormat: boolean;
+  fallbackFormat?: boolean;
+  includeSourceFormat?: boolean;
   artDirectives?: ({
     src: string;
     media: string;
@@ -37,17 +37,28 @@ declare interface ComponentProps {
   } & ImageToolsConfigs)[];
 }
 
+declare interface SharedConfigs {
+  width?: number;
+  height?: number;
+  aspect?: number;
+  format?:
+    | []
+    | (
+        | format
+        | {
+            format: format;
+            options: ImageToolsConfigs;
+          }
+      )[];
+}
+
 declare interface ImageToolsConfigs {
-  format?: [] | format | format[];
   flip?: boolean;
   flop?: boolean;
   invert?: boolean;
   flatten?: boolean;
   normalize?: boolean;
   grayscale?: boolean;
-  width?: number;
-  height?: number;
-  aspect?: number;
   hue?: number;
   saturation?: number;
   brightness?: number;
@@ -55,7 +66,7 @@ declare interface ImageToolsConfigs {
   tint?: string;
   blur?: number | boolean;
   median?: number | boolean;
-  rotate?: number | number[];
+  rotate?: number;
   quality?: number;
   fit?: "cover" | "contain" | "fill" | "inside" | "outside";
   kernel?: "nearest" | "cubic" | "mitchell" | "lanczos2" | "lanczos3";
@@ -83,6 +94,6 @@ declare interface ImageToolsConfigs {
     | "attention";
 }
 
-export default interface ImageConfig
-  extends ComponentProps,
-    ImageToolsConfigs {}
+declare type ImageConfig = SharedConfigs & ComponentProps & ImageToolsConfigs;
+
+export default ImageConfig;
