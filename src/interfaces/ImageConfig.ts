@@ -9,6 +9,22 @@ declare type format =
   | "webp"
   | "gif";
 
+declare interface FormatOptions {
+  format?: format | format[] | [] | null;
+  fallbackFormat?: boolean;
+  includeSourceFormat?: boolean;
+  formatOptions?: {
+    [key in format | "tracedSVG"]?: ImageToolsConfigs;
+  };
+}
+
+declare interface ArtDirectives extends FormatOptions, ImageToolsConfigs {
+  src: string;
+  media: string;
+  breakpoints?: number | number[];
+  placeholder?: "dominantColor" | "blurred" | "tracedSVG" | "none";
+}
+
 declare interface ComponentProps {
   src: string;
   alt: string;
@@ -27,24 +43,7 @@ declare interface ComponentProps {
   objectPosition?: string;
   layout?: "constrained" | "fixed" | "fullWidth" | "fill";
   placeholder?: "dominantColor" | "blurred" | "tracedSVG" | "none";
-  fallbackFormat?: boolean;
-  includeSourceFormat?: boolean;
-  formatOptions?: {
-    [key in format | "tracedSVG"]?: ImageToolsConfigs;
-  };
-  artDirectives?: ({
-    src: string;
-    media: string;
-    breakpoints?: number | number[];
-    placeholder?: "dominantColor" | "blurred" | "tracedSVG" | "none";
-  } & ImageToolsConfigs)[];
-}
-
-declare interface SharedConfigs {
-  width?: number;
-  height?: number;
-  aspect?: number;
-  format?: format | format[] | [] | null;
+  artDirectives?: ArtDirectives[];
 }
 
 declare interface ImageToolsConfigs {
@@ -57,6 +56,9 @@ declare interface ImageToolsConfigs {
   hue?: number;
   saturation?: number;
   brightness?: number;
+  width?: number;
+  height?: number;
+  aspect?: number;
   background?: string;
   tint?: string;
   blur?: number | boolean;
@@ -89,6 +91,6 @@ declare interface ImageToolsConfigs {
     | "attention";
 }
 
-declare type ImageConfig = SharedConfigs & ComponentProps & ImageToolsConfigs;
+declare type ImageConfig = ComponentProps & FormatOptions & ImageToolsConfigs;
 
 export default ImageConfig;

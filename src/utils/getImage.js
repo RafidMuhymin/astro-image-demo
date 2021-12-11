@@ -53,8 +53,7 @@ export default async function (
     format,
     imageFormat,
     fallbackFormat,
-    includeSourceFormat,
-    rest
+    includeSourceFormat
   );
 
   const maxWidth = requiredBreakpoints.at(-1);

@@ -15,28 +15,43 @@ export default async function getArtDirectedImages(
   const sources = [];
   const fallbacks = [];
 
-  for (const { src, media } of artDirectives) {
+  for (const {
+    src,
+    media,
+    placeholder: directivePlaceholder,
+    breakpoints: directiveBreakpoints,
+    format: directiveFormat,
+    fallbackFormat: directiveFallbackFormat,
+    includeSourceFormat: directiveIncludeSourceFormat,
+    formatOptions: directiveFormatOptions = {},
+    ...configOptions
+  } of artDirectives) {
     const image = loadImage("." + src);
     const { width: imageWidth, format: imageFormat } = await image.metadata();
 
     const { formats, requiredBreakpoints } = getConfigOptions(
       imageWidth,
-      breakpoints,
-      format,
+      directiveBreakpoints || breakpoints,
+      directiveFormat || format,
       imageFormat,
-      fallbackFormat,
-      includeSourceFormat,
-      formatOptions,
-      rest
+      directiveFallbackFormat || fallbackFormat,
+      directiveIncludeSourceFormat || includeSourceFormat
     );
 
     for (const format of formats) {
-      const params = { ...rest, ...formatOptions[format] };
+      const params = {
+        ...rest,
+        ...configOptions,
+        ...formatOptions[format],
+        ...directiveFormatOptions[format],
+      };
+
       const { default: srcset } = await import(
         `${src}?srcset&w=${requiredBreakpoints.join(
           ";"
         )}&format=${format}${params}`
       );
+
       sources.push({
         media,
         format,
@@ -46,7 +61,12 @@ export default async function getArtDirectedImages(
 
     fallbacks.push({
       media,
-      src: await getFallbackImage(placeholder, image, imageFormat, rest),
+      src: await getFallbackImage(
+        directivePlaceholder || placeholder,
+        image,
+        imageFormat,
+        rest
+      ),
     });
   }
 

@@ -1,5 +1,4 @@
 import getBreakpoints from "./getBreakpoints";
-import stringifyParams from "./stringifyParams";
 
 export default function getConfigOptions(
   imageWidth,
@@ -7,8 +6,7 @@ export default function getConfigOptions(
   format,
   imageFormat,
   fallbackFormat,
-  includeSourceFormat,
-  rest
+  includeSourceFormat
 ) {
   const formats = [
     ...new Set(
