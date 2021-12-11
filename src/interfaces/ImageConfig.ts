@@ -56,7 +56,7 @@ declare interface ImageToolsConfigs {
   blur?: number | boolean;
   median?: number | boolean;
   rotate?: number | number[];
-  quality?: number | number[];
+  quality?: number;
   fit?: "cover" | "contain" | "fill" | "inside" | "outside";
   kernel?: "nearest" | "cubic" | "mitchell" | "lanczos2" | "lanczos3";
   position?:
