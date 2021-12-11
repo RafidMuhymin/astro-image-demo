@@ -16,7 +16,7 @@ const {
   layout = "constrained",
   placeholder = "blurred",
   artDirectives,
-  formats = ["avif", "webp"],
+  format = ["avif", "webp"],
   fallbackFormat,
   includeSourceFormat = true,
   ...configOptions
@@ -27,7 +27,7 @@ const label = `Image at ${src} optimized in`;
 console.time(label);
 const { sources, fallbacks, sizes } = await getImage(
   src,
-  formats,
+  format,
   breakpoints,
   placeholder,
   artDirectives,

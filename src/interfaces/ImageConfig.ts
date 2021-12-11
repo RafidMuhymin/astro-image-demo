@@ -41,15 +41,7 @@ declare interface SharedConfigs {
   width?: number;
   height?: number;
   aspect?: number;
-  formats?:
-    | []
-    | (
-        | format
-        | {
-            format: format;
-            options?: ImageToolsConfigs;
-          }
-      )[];
+  format?: format | format[] | [] | null;
 }
 
 declare interface ImageToolsConfigs {

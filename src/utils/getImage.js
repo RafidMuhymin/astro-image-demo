@@ -13,7 +13,7 @@ const imagesData = new Map();
 
 export default async function (
   src,
-  formats,
+  format,
   breakpoints,
   placeholder,
   artDirectives,
@@ -46,23 +46,22 @@ export default async function (
 
   fallbackFormat ||= imageFormat;
 
-  const { requiredFormats, requiredBreakpoints, maxWidth, params } =
-    getConfigOptions(
-      imageWidth,
-      breakpoints,
-      formats,
-      imageFormat,
-      fallbackFormat,
-      includeSourceFormat,
-      rest
-    );
+  const { formats, requiredBreakpoints, maxWidth, params } = getConfigOptions(
+    imageWidth,
+    breakpoints,
+    format,
+    imageFormat,
+    fallbackFormat,
+    includeSourceFormat,
+    rest
+  );
 
   const { sources, fallback } = await getImageSources(
     src,
     image,
     placeholder,
     fallbackFormat,
-    requiredFormats,
+    formats,
     requiredBreakpoints,
     maxWidth,
     params,
@@ -72,7 +71,7 @@ export default async function (
   const artDirectedImages = await getArtDirectedImages(
     artDirectives,
     placeholder,
-    formats,
+    format,
     breakpoints,
     fallbackFormat,
     includeSourceFormat,
