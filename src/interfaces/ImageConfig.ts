@@ -25,7 +25,7 @@ declare interface ComponentProps {
       };
   objectFit?: "fill" | "contain" | "cover" | "none" | "scale-down";
   objectPosition?: string;
-  layout?: "constrained" | "fixed" | "full";
+  layout?: "constrained" | "fixed" | "fullWidth" | "fill";
   placeholder?: "dominantColor" | "blurred" | "tracedSVG" | "none";
   fallbackFormat?: boolean;
   includeSourceFormat?: boolean;
