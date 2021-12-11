@@ -5,7 +5,7 @@ import getFallbackImage from "./getFallbackImage";
 export default async function getArtDirectedImages(
   artDirectives = [],
   placeholder,
-  format,
+  formats,
   breakpoints,
   fallbackFormat,
   includeSourceFormat,
@@ -18,17 +18,17 @@ export default async function getArtDirectedImages(
     const image = loadImage("." + src);
     const { width: imageWidth, format: imageFormat } = await image.metadata();
 
-    const { formats, requiredBreakpoints, params } = getConfigOptions(
+    const { requiredFormats, requiredBreakpoints, params } = getConfigOptions(
       imageWidth,
       breakpoints,
-      format,
+      formats,
       imageFormat,
       fallbackFormat,
       includeSourceFormat,
       rest
     );
 
-    for (const format of formats) {
+    for (const format of requiredFormats) {
       const { default: srcset } = await import(
         `${src}?srcset&w=${requiredBreakpoints.join(
           ";"

@@ -41,7 +41,7 @@ declare interface SharedConfigs {
   width?: number;
   height?: number;
   aspect?: number;
-  format?:
+  formats?:
     | []
     | (
         | format

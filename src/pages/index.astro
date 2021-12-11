@@ -1,14 +1,10 @@
 ---
 import Image from "../components/Image.astro";
-import srcset from "../images/elva-800w.jpg?srcset&avif";
-
-console.log(srcset);
 ---
 
 <!DOCTYPE html>
 <html>
   <body>
-    <img {srcset} />
     <h1>Hello World!</h1>
     <Image
       src="/src/images/elva-800w.jpg"

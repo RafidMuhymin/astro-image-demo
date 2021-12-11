@@ -4,15 +4,15 @@ import stringifyParams from "./stringifyParams";
 export default function getConfigOptions(
   imageWidth,
   breakpoints,
-  format,
+  formats,
   imageFormat,
   fallbackFormat,
   includeSourceFormat,
   rest
 ) {
-  const formats = [
+  const requiredFormats = [
     ...new Set(
-      [format, includeSourceFormat && imageFormat]
+      [formats, includeSourceFormat && imageFormat]
         .flat()
         .filter((f) => f && f !== fallbackFormat)
     ),
@@ -26,7 +26,7 @@ export default function getConfigOptions(
   const params = stringifyParams(rest);
 
   return {
-    formats,
+    requiredFormats,
     requiredBreakpoints,
     maxWidth,
     params,
