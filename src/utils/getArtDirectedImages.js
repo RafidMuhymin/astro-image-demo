@@ -9,6 +9,7 @@ export default async function getArtDirectedImages(
   breakpoints,
   fallbackFormat,
   includeSourceFormat,
+  formatOptions,
   rest
 ) {
   const sources = [];
@@ -18,17 +19,19 @@ export default async function getArtDirectedImages(
     const image = loadImage("." + src);
     const { width: imageWidth, format: imageFormat } = await image.metadata();
 
-    const { formats, requiredBreakpoints, params } = getConfigOptions(
+    const { formats, requiredBreakpoints } = getConfigOptions(
       imageWidth,
       breakpoints,
       format,
       imageFormat,
       fallbackFormat,
       includeSourceFormat,
+      formatOptions,
       rest
     );
 
     for (const format of formats) {
+      const params = { ...rest, ...formatOptions[format] };
       const { default: srcset } = await import(
         `${src}?srcset&w=${requiredBreakpoints.join(
           ";"

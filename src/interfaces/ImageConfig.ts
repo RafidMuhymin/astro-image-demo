@@ -29,6 +29,9 @@ declare interface ComponentProps {
   placeholder?: "dominantColor" | "blurred" | "tracedSVG" | "none";
   fallbackFormat?: boolean;
   includeSourceFormat?: boolean;
+  formatOptions?: {
+    [key in format | "tracedSVG"]?: ImageToolsConfigs;
+  };
   artDirectives?: ({
     src: string;
     media: string;

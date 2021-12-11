@@ -1,4 +1,5 @@
 import getFallbackImage from "./getFallbackImage";
+import stringifyParams from "./stringifyParams";
 
 export default async function getImageSources(
   src,
@@ -8,9 +9,10 @@ export default async function getImageSources(
   formats,
   requiredBreakpoints,
   maxWidth,
-  params,
+  formatOptions,
   rest
 ) {
+  const params = stringifyParams({ ...rest, ...formatOptions[fallbackFormat] });
   const { default: fallbackImageSource } = await import(
     `${src}?w=${maxWidth}&format=${fallbackFormat}${params}`
   );
@@ -18,6 +20,7 @@ export default async function getImageSources(
   const sources = [];
 
   for (const format of formats) {
+    const params = stringifyParams({ ...rest, ...formatOptions[format] });
     const { default: srcset } = await import(
       `${src}?srcset&w=${requiredBreakpoints.join(
         ";"

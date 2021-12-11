@@ -21,14 +21,8 @@ export default function getConfigOptions(
 
   const requiredBreakpoints = getBreakpoints(breakpoints, imageWidth);
 
-  const maxWidth = requiredBreakpoints.at(-1);
-
-  const params = stringifyParams(rest);
-
   return {
     formats,
     requiredBreakpoints,
-    maxWidth,
-    params,
   };
 }

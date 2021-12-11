@@ -17,6 +17,7 @@ const {
   placeholder = "blurred",
   artDirectives,
   format = ["avif", "webp"],
+  formatOptions = {},
   fallbackFormat,
   includeSourceFormat = true,
   ...configOptions
@@ -33,6 +34,7 @@ const { sources, fallbacks, sizes } = await getImage(
   artDirectives,
   fallbackFormat,
   includeSourceFormat,
+  formatOptions,
   configOptions
 );
 console.timeEnd(label);

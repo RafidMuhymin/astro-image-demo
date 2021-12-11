@@ -19,6 +19,7 @@ export default async function (
   artDirectives,
   fallbackFormat,
   includeSourceFormat,
+  formatOptions,
   configOptions
 ) {
   const hash = crypto
@@ -46,7 +47,7 @@ export default async function (
 
   fallbackFormat ||= imageFormat;
 
-  const { formats, requiredBreakpoints, maxWidth, params } = getConfigOptions(
+  const { formats, requiredBreakpoints } = getConfigOptions(
     imageWidth,
     breakpoints,
     format,
@@ -56,6 +57,8 @@ export default async function (
     rest
   );
 
+  const maxWidth = requiredBreakpoints.at(-1);
+
   const { sources, fallback } = await getImageSources(
     src,
     image,
@@ -64,7 +67,7 @@ export default async function (
     formats,
     requiredBreakpoints,
     maxWidth,
-    params,
+    formatOptions,
     rest
   );
 
@@ -75,6 +78,7 @@ export default async function (
     breakpoints,
     fallbackFormat,
     includeSourceFormat,
+    formatOptions,
     rest
   );
 
