@@ -38,6 +38,7 @@ export default async function getImageSources(
     placeholder,
     image,
     fallbackFormat,
+    formatOptions,
     rest
   );
 

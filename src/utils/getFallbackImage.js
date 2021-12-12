@@ -7,9 +7,9 @@ import {
   generateTransforms,
 } from "./imagetools-core";
 
-const getTracedSVG = async (image) => {
-  const traceSVG = util.promisify(potrace.trace);
-  const svg = await traceSVG(await image.toBuffer());
+const getTracedSVG = async (image, { tracedSVG }) => {
+  const traceSVG = util.promisify(potrace[tracedSVG.function]);
+  const svg = await traceSVG(await image.toBuffer(), tracedSVG.options);
   return `data:image/svg+xml;utf8,${svg}`;
 };
 
@@ -20,8 +20,11 @@ const getDominantColor = async (image) => {
   return `data:image/svg+xml;utf8,${svg}`;
 };
 
-const getBlurredFallback = async (image, format, rest) => {
-  const { transforms } = generateTransforms({ width: 20, ...rest }, builtins);
+const getBlurredFallback = async (image, format, formatOptions, rest) => {
+  const { transforms } = generateTransforms(
+    { width: 20, ...rest, ...formatOptions[format] },
+    builtins
+  );
   const { image: fallbackImage } = await applyTransforms(transforms, image);
   const fallbackImageBuffer = await fallbackImage.toBuffer();
   const fallbackImageBase64 = fallbackImageBuffer.toString("base64");
@@ -35,6 +38,7 @@ export default async function getFallbackImage(
   placeholder,
   image,
   format,
+  formatOptions,
   rest
 ) {
   const hash = crypto
@@ -48,9 +52,9 @@ export default async function getFallbackImage(
 
   switch (placeholder) {
     case "blurred":
-      return await getBlurredFallback(image, format, rest);
+      return await getBlurredFallback(image, format, formatOptions, rest);
     case "tracedSVG":
-      return await getTracedSVG(image);
+      return await getTracedSVG(image, formatOptions);
     default:
       return await getDominantColor(image);
   }

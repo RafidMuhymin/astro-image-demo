@@ -4,11 +4,12 @@ import Image from "../components/Image.astro";
 
 <!DOCTYPE html>
 <html>
-  <body style="height: 100vh;">
+  <body>
     <h1>Hello World!</h1>
     <Image
       src="/src/images/elva-800w.jpg"
       alt="A father holiding his beloved daughter in his arms"
+      placeholder="tracedSVG"
       artDirectives={[
         {
           media: "(max-width: 480px)",

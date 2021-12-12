@@ -17,7 +17,11 @@ const {
   placeholder = "blurred",
   artDirectives,
   format = ["avif", "webp"],
-  formatOptions = {},
+  formatOptions = {
+    tracedSVG: {
+      function: "trace",
+    },
+  },
   fallbackFormat,
   includeSourceFormat = true,
   ...configOptions

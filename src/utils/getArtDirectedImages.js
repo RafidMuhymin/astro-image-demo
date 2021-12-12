@@ -65,6 +65,7 @@ export default async function getArtDirectedImages(
         directivePlaceholder || placeholder,
         image,
         imageFormat,
+        { ...formatOptions, ...directiveFormatOptions },
         rest
       ),
     });
