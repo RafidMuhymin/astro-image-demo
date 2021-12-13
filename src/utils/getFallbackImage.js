@@ -32,8 +32,6 @@ const getBlurredFallback = async (image, format, formatOptions, rest) => {
   return dataUri;
 };
 
-const fallbackImages = new Map();
-
 export default async function getFallbackImage(
   placeholder,
   image,
@@ -41,15 +39,6 @@ export default async function getFallbackImage(
   formatOptions,
   rest
 ) {
-  const hash = crypto
-    .createHash("sha256")
-    .update(JSON.stringify(arguments))
-    .digest("hex");
-
-  if (fallbackImages.has(hash)) {
-    return fallbackImages.get(hash);
-  }
-
   switch (placeholder) {
     case "blurred":
       return await getBlurredFallback(image, format, formatOptions, rest);

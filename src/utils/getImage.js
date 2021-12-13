@@ -1,13 +1,8 @@
 import crypto from "crypto";
-import {
-  applyTransforms,
-  builtins,
-  generateTransforms,
-  loadImage,
-} from "./imagetools-core";
 import getArtDirectedImages from "./getArtDirectedImages";
 import getConfigOptions from "./getConfigOptions";
 import getImageSources from "./getImageSources";
+import getProcessedImage from "./getProcessedImage";
 
 const imagesData = new Map();
 
@@ -33,18 +28,10 @@ export default async function (
 
   const { width, height, aspect, ...rest } = configOptions;
 
-  // Load and resize the image if necessary
-  const { image, metadata } = await applyTransforms(
-    generateTransforms({ width, height, aspect }, builtins).transforms,
-    loadImage("." + src)
-  );
+  const { path, image, imageWidth, imageHeight, imageFormat } =
+    await getProcessedImage(src, width, height, aspect);
 
-  const {
-    width: imageWidth,
-    height: imageHeight,
-    format: imageFormat,
-  } = metadata;
-
+  src = path;
   rest.aspect = `${imageWidth / imageHeight}`;
 
   fallbackFormat ||= imageFormat;

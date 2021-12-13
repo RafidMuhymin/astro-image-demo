@@ -1,6 +1,10 @@
 import module from "module";
 
-const { applyTransforms, builtins, generateTransforms, loadImage } =
-  module.createRequire(import.meta.url)("imagetools-core");
+const moduleRequire = module.createRequire(import.meta.url);
 
-export { applyTransforms, builtins, generateTransforms, loadImage };
+const { applyTransforms, builtins, generateTransforms, loadImage } =
+  moduleRequire("imagetools-core");
+
+const sharp = moduleRequire("sharp");
+
+export { sharp, applyTransforms, builtins, generateTransforms, loadImage };
