@@ -13,6 +13,7 @@ export default async function getImageSources(
   rest
 ) {
   const params = stringifyParams({ ...rest, ...formatOptions[fallbackFormat] });
+
   const { default: fallbackImageSource } = await import(
     `${src}?w=${maxWidth}&format=${fallbackFormat}${params}`
   );

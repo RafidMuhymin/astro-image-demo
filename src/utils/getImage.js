@@ -45,6 +45,8 @@ export default async function (
     format: imageFormat,
   } = metadata;
 
+  rest.aspect = `${imageWidth / imageHeight}`;
+
   fallbackFormat ||= imageFormat;
 
   const { formats, requiredBreakpoints } = getConfigOptions(

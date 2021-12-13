@@ -1,4 +1,9 @@
-import { loadImage } from "./imagetools-core";
+import {
+  applyTransforms,
+  builtins,
+  generateTransforms,
+  loadImage,
+} from "./imagetools-core";
 import getConfigOptions from "./getConfigOptions";
 import getFallbackImage from "./getFallbackImage";
 import stringifyParams from "./stringifyParams";
@@ -27,8 +32,20 @@ export default async function getArtDirectedImages(
     formatOptions: directiveFormatOptions = {},
     ...configOptions
   } of artDirectives) {
-    const image = loadImage("." + src);
-    const { width: imageWidth, format: imageFormat } = await image.metadata();
+    const { width, height, aspect, ...rest2 } = configOptions;
+
+    const { image, metadata } = await applyTransforms(
+      generateTransforms({ width, height, aspect }, builtins).transforms,
+      loadImage("." + src)
+    );
+
+    const {
+      width: imageWidth,
+      height: imageHeight,
+      format: imageFormat,
+    } = await metadata;
+
+    rest2.aspect = `${imageWidth / imageHeight}`;
 
     const { formats, requiredBreakpoints } = getConfigOptions(
       imageWidth,
@@ -42,7 +59,7 @@ export default async function getArtDirectedImages(
     for (const format of formats) {
       const params = stringifyParams({
         ...rest,
-        ...configOptions,
+        ...rest2,
         ...formatOptions[format],
         ...directiveFormatOptions[format],
       });

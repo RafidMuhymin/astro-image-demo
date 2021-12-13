@@ -7,7 +7,7 @@ export default function getBreakpoints(breakpoints, imageWidth) {
 
   let current = minWidth || 320;
   const max = maxWidth || imageWidth;
-  n = count || max < 400 ? 1 : max < 640 ? 2 : 3;
+  n = count || (max < 400 ? 1 : max < 640 ? 2 : 3);
 
   const diff = max - current;
   const breakPoints = [];
