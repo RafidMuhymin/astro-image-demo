@@ -1,6 +1,7 @@
 import { loadImage } from "./imagetools-core";
 import getConfigOptions from "./getConfigOptions";
 import getFallbackImage from "./getFallbackImage";
+import stringifyParams from "./stringifyParams";
 
 export default async function getArtDirectedImages(
   artDirectives = [],
@@ -39,12 +40,12 @@ export default async function getArtDirectedImages(
     );
 
     for (const format of formats) {
-      const params = {
+      const params = stringifyParams({
         ...rest,
         ...configOptions,
         ...formatOptions[format],
         ...directiveFormatOptions[format],
-      };
+      });
 
       const { default: srcset } = await import(
         `${src}?srcset&w=${requiredBreakpoints.join(

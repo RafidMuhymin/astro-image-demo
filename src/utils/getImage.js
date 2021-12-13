@@ -34,7 +34,7 @@ export default async function (
   const { width, height, aspect, ...rest } = configOptions;
 
   // Load and resize the image if necessary
-  const { image } = await applyTransforms(
+  const { image, metadata } = await applyTransforms(
     generateTransforms({ width, height, aspect }, builtins).transforms,
     loadImage("." + src)
   );
@@ -43,7 +43,7 @@ export default async function (
     width: imageWidth,
     height: imageHeight,
     format: imageFormat,
-  } = await image.metadata();
+  } = metadata;
 
   fallbackFormat ||= imageFormat;
 
