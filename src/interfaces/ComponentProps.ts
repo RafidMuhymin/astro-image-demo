@@ -11,7 +11,6 @@ declare interface ArtDirectives extends FormatOptions, ImageToolsConfigs {
 export interface ComponentProps {
   src: string;
   alt: string;
-  caption?: string;
   preload?: boolean | format;
   loading?: "lazy" | "eager" | "auto" | null;
   decoding?: "async" | "sync" | "auto" | null;

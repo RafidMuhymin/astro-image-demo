@@ -6,7 +6,6 @@ import "../styles/style.scss";
 const {
   src,
   alt,
-  caption,
   preload,
   loading = preload ? "eager" : "lazy",
   decoding = "async",
@@ -58,8 +57,6 @@ const imagesizes = `(min-width: ${width}px) ${width}px, 100vw`;
     imagesizes={imagesizes}
   />
 )}
-
-{caption && `<figure class="astro-image-figure">`}
 
 <div
   class={`astro-image-container astro-image-${layout}`}
@@ -130,6 +127,3 @@ const imagesizes = `(min-width: ${width}px) ${width}px, 100vw`;
     </picture>
   )}
 </div>
-
-{caption && <figcaption class="astro-image-figcaption">{caption}</figcaption>}
-{caption && `</figure>`}
