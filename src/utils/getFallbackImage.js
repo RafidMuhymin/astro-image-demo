@@ -1,5 +1,4 @@
 import util from "util";
-import crypto from "crypto";
 import potrace from "potrace";
 import {
   applyTransforms,

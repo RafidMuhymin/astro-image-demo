@@ -3,7 +3,6 @@ import getArtDirectedImages from "./getArtDirectedImages";
 import getConfigOptions from "./getConfigOptions";
 import getImageSources from "./getImageSources";
 import getProcessedImage from "./getProcessedImage";
-import { parseURL } from "./imagetools-core";
 
 const imagesData = new Map();
 
