@@ -15,7 +15,7 @@ const {
   layout = "constrained",
   placeholder = "blurred",
   artDirectives,
-  format = ["avif", "webp"],
+  format = [],
   formatOptions = {
     tracedSVG: {
       function: "trace",
@@ -87,37 +87,37 @@ ${fallbacks
 
 {style}
 
-<picture>
-  {sources.map(({ media, format, src, srcset, sizes }) =>
-    src ? (
-      <img
-        class={uuid}
-        src={src}
-        alt={alt}
-        {...sizes}
-        srcset={srcset}
-        loading={loading}
-        sizes={imagesizes}
-        decoding={decoding}
-        style={
-          `object-fit: ${objectFit}; object-position: ${objectPosition}; ` +
-          (layout === "fill"
-            ? `width: 100%; height: 100%;`
-            : layout === "fixed"
-            ? `width: ${width}px; height: ${height}px;`
-            : layout === "fullWidth"
-            ? `width: 100%; padding-top: ${(height * 100) / width}%;`
-            : "max-width: 100%; height: auto;")
-        }
-      />
-    ) : (
-      <source
-        {...sizes}
-        media={media}
-        type={`image/${format}`}
-        srcset={srcset}
-        sizes={imagesizes}
-      />
-    )
-  )}
-</picture>
+{sources.length > 1 && `<picture>`}
+{sources.map(({ media, format, src, srcset, sizes }) =>
+  src ? (
+    <img
+      class={uuid}
+      src={src}
+      alt={alt}
+      {...sizes}
+      srcset={srcset}
+      loading={loading}
+      sizes={imagesizes}
+      decoding={decoding}
+      style={
+        `object-fit: ${objectFit}; object-position: ${objectPosition}; ` +
+        (layout === "fill"
+          ? `width: 100%; height: 100%;`
+          : layout === "fixed"
+          ? `width: ${width}px; height: ${height}px;`
+          : layout === "fullWidth"
+          ? `width: 100%; padding-top: ${(height * 100) / width}%;`
+          : "max-width: 100%; height: auto;")
+      }
+    />
+  ) : (
+    <source
+      {...sizes}
+      media={media}
+      type={`image/${format}`}
+      srcset={srcset}
+      sizes={imagesizes}
+    />
+  )
+)}
+{sources.length > 1 && `</picture>`}
