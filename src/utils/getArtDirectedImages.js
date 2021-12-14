@@ -1,14 +1,9 @@
 // @ts-check
 
-import {
-  applyTransforms,
-  builtins,
-  generateTransforms,
-  loadImage,
-} from "./imagetools-core";
 import getConfigOptions from "./getConfigOptions";
 import getFallbackImage from "./getFallbackImage";
 import stringifyParams from "./stringifyParams";
+import getProcessedImage from "./getProcessedImage";
 
 export default async function getArtDirectedImages(
   artDirectives = [],
@@ -34,18 +29,14 @@ export default async function getArtDirectedImages(
     formatOptions: directiveFormatOptions = {},
     ...configOptions
   } of artDirectives) {
-    const { width, height, aspect, ...rest2 } = configOptions;
-
-    const { image, metadata } = await applyTransforms(
-      generateTransforms({ width, height, aspect }, builtins).transforms,
-      loadImage("." + src)
-    );
-
     const {
-      width: imageWidth,
-      height: imageHeight,
-      format: imageFormat,
-    } = await metadata;
+      path,
+      rest: rest2,
+      image,
+      imageWidth,
+      imageHeight,
+      imageFormat,
+    } = await getProcessedImage(src, configOptions);
 
     rest2.aspect = `${imageWidth / imageHeight}`;
 
@@ -69,7 +60,7 @@ export default async function getArtDirectedImages(
       });
 
       const { default: srcset } = await import(
-        `${src}?srcset&w=${requiredBreakpoints.join(
+        `${path}?srcset&w=${requiredBreakpoints.join(
           ";"
         )}&format=${format}${params}`
       );
