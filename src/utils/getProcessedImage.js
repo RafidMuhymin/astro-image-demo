@@ -11,7 +11,7 @@ import {
 export default async (src, width, height, aspect, w, h, ar) => {
   let imageBuffer, filepath;
 
-  if (src.match("(http://|https://|data:).*")) {
+  if (src.match("(http://|https://|data:image/).*")) {
     const hash = crypto.createHash("sha256").update(src).digest("hex");
     const directory = "node_modules/.cache";
     filepath = `${directory}/${hash}`;

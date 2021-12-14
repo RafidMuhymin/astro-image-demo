@@ -1,14 +1,9 @@
 import crypto from "crypto";
-import {
-  builtinOutputFormats,
-  extractEntries,
-  parseURL,
-  resolveConfigs,
-} from "./imagetools-core";
 import getArtDirectedImages from "./getArtDirectedImages";
 import getConfigOptions from "./getConfigOptions";
 import getImageSources from "./getImageSources";
 import getProcessedImage from "./getProcessedImage";
+import { parseURL } from "./imagetools-core";
 
 const imagesData = new Map();
 
@@ -32,10 +27,10 @@ export default async function (
     return imagesData.get(hash);
   }
 
-  const { pathname, searchParams } = new URL(`file://${src}`);
+  const { origin, pathname, searchParams } = parseURL(src);
   const paramOptions = Object.fromEntries(searchParams);
 
-  src = pathname;
+  src = `${origin === "null" ? "" : origin}${pathname}`;
   configOptions = { ...paramOptions, ...configOptions };
 
   const { width, height, aspect, w, h, ar, ...rest } = configOptions;
