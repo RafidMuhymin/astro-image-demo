@@ -6,7 +6,7 @@ import {
   builtins,
   generateTransforms,
   parseURL,
-  sharp,
+  loadImage,
 } from "./imagetools-core";
 
 export default async (src, configOptions) => {
@@ -18,24 +18,23 @@ export default async (src, configOptions) => {
 
   const { width, height, aspect, w, h, ar, ...rest } = configOptions;
 
-  let imageBuffer, filepath;
   if (src.match("(http://|https://|data:image/).*")) {
     const hash = crypto.createHash("sha256").update(src).digest("hex");
     const directory = "node_modules/.cache";
-    filepath = `${directory}/${hash}`;
+    const filepath = `${directory}/${hash}.jpeg`;
     fs.existsSync(directory) || fs.mkdirSync(directory);
     fs.existsSync(filepath) ||
       fs.writeFileSync(
         filepath,
         Buffer.from(await (await fetch(src)).arrayBuffer())
       );
-    imageBuffer = fs.readFileSync(filepath);
+    src = `/${filepath}`;
   }
 
   const { image, metadata } = await applyTransforms(
     generateTransforms({ width, height, aspect, w, h, ar }, builtins)
       .transforms,
-    await sharp(imageBuffer || `.${src}`)
+    loadImage(`.${src}`)
   );
 
   const {
@@ -45,12 +44,6 @@ export default async (src, configOptions) => {
   } = metadata;
 
   let path = src;
-
-  if (imageBuffer) {
-    const newFilepath = `${filepath}.${imageFormat}`;
-    fs.existsSync(newFilepath) || fs.writeFileSync(newFilepath, imageBuffer);
-    path = `/${newFilepath}`;
-  }
 
   return {
     path,
