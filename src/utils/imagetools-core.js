@@ -7,4 +7,4 @@ const { applyTransforms, builtins, generateTransforms, loadImage } =
 
 const sharp = moduleRequire("sharp");
 
-export { sharp, applyTransforms, builtins, generateTransforms, loadImage };
+export { applyTransforms, builtins, generateTransforms, loadImage, sharp };

@@ -8,7 +8,7 @@ import {
   sharp,
 } from "./imagetools-core";
 
-export default async function getProcessedImage(src, width, height, aspect) {
+export default async (src, width, height, aspect, w, h, ar) => {
   let imageBuffer, filepath;
 
   if (src.match("(http://|https://|data:).*")) {
@@ -25,7 +25,8 @@ export default async function getProcessedImage(src, width, height, aspect) {
   }
 
   const { image, metadata } = await applyTransforms(
-    generateTransforms({ width, height, aspect }, builtins).transforms,
+    generateTransforms({ width, height, aspect, w, h, ar }, builtins)
+      .transforms,
     await sharp(imageBuffer || `.${src}`)
   );
 
@@ -50,4 +51,4 @@ export default async function getProcessedImage(src, width, height, aspect) {
     imageHeight,
     imageFormat,
   };
-}
+};

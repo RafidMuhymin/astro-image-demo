@@ -22,7 +22,7 @@ const getDominantColor = async (image) => {
 
 const getBlurredFallback = async (image, format, formatOptions, rest) => {
   const { transforms } = generateTransforms(
-    { width: 20, ...rest, ...formatOptions[format] },
+    { w: 20, ...rest, ...formatOptions[format] },
     builtins
   );
   const { image: fallbackImage } = await applyTransforms(transforms, image);
