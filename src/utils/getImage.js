@@ -27,16 +27,8 @@ export default async function (
     return imagesData.get(hash);
   }
 
-  const { origin, pathname, searchParams } = parseURL(src);
-  const paramOptions = Object.fromEntries(searchParams);
-
-  src = `${origin === "null" ? "" : origin}${pathname}`;
-  configOptions = { ...paramOptions, ...configOptions };
-
-  const { width, height, aspect, w, h, ar, ...rest } = configOptions;
-
-  const { path, image, imageWidth, imageHeight, imageFormat } =
-    await getProcessedImage(src, width, height, aspect, w, h, ar);
+  const { path, rest, image, imageWidth, imageHeight, imageFormat } =
+    await getProcessedImage(src, configOptions);
 
   src = path;
   rest.aspect = `${imageWidth / imageHeight}`;
@@ -84,7 +76,7 @@ export default async function (
   // Generate the sizes for browser
   const sizes = {
     width: maxWidth,
-    height: Math.round(maxWidth / (aspect || imageWidth / imageHeight)),
+    height: Math.round(maxWidth / rest.aspect),
   };
 
   const imageData = {
