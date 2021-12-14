@@ -1,17 +1,33 @@
+// @ts-check
+
+import getConfigOptions from "./getConfigOptions";
 import getFallbackImage from "./getFallbackImage";
 import stringifyParams from "./stringifyParams";
 
 export default async function getImageSources(
   src,
   image,
+  format,
+  imageWidth,
+  breakpoints,
   placeholder,
+  imageFormat,
   fallbackFormat,
-  formats,
-  requiredBreakpoints,
-  maxWidth,
   formatOptions,
+  includeSourceFormat,
   rest
 ) {
+  const { formats, requiredBreakpoints } = getConfigOptions(
+    imageWidth,
+    breakpoints,
+    format,
+    imageFormat,
+    fallbackFormat,
+    includeSourceFormat
+  );
+
+  const maxWidth = requiredBreakpoints.at(-1);
+
   const params = stringifyParams({ ...rest, ...formatOptions[fallbackFormat] });
 
   const { default: fallbackImageSource } = await import(
@@ -28,10 +44,16 @@ export default async function getImageSources(
       )}&format=${format}${params}`
     );
 
+    const sizes = {
+      width: maxWidth,
+      height: Math.round(maxWidth / rest.aspect),
+    };
+
     sources.push({
       src: format === fallbackFormat && fallbackImageSource,
       format,
       srcset,
+      sizes,
     });
   }
 

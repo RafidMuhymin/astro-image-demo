@@ -1,3 +1,5 @@
+// @ts-check
+
 import {
   applyTransforms,
   builtins,
@@ -56,6 +58,8 @@ export default async function getArtDirectedImages(
       directiveIncludeSourceFormat || includeSourceFormat
     );
 
+    const maxWidth = requiredBreakpoints.at(-1);
+
     for (const format of formats) {
       const params = stringifyParams({
         ...rest,
@@ -70,10 +74,16 @@ export default async function getArtDirectedImages(
         )}&format=${format}${params}`
       );
 
+      const sizes = {
+        width: maxWidth,
+        height: Math.round(maxWidth / rest2.aspect),
+      };
+
       sources.push({
         media,
         format,
         srcset,
+        sizes,
       });
     }
 
@@ -84,7 +94,7 @@ export default async function getArtDirectedImages(
         image,
         imageFormat,
         { ...formatOptions, ...directiveFormatOptions },
-        rest
+        { ...rest, ...rest2 }
       ),
     });
   }

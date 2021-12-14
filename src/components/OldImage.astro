@@ -1,0 +1,135 @@
+---
+import type ImageConfig from "/src/interfaces/ImageConfig.ts";
+import getImage from "../utils/getImage.js";
+import "../styles/style.scss";
+
+const {
+  src,
+  alt,
+  caption,
+  preload,
+  loading = preload ? "eager" : "lazy",
+  decoding = "async",
+  breakpoints,
+  objectFit = "cover",
+  objectPosition,
+  layout = "constrained",
+  placeholder = "blurred",
+  artDirectives,
+  format = ["avif", "webp"],
+  formatOptions = {
+    tracedSVG: {
+      function: "trace",
+    },
+  },
+  fallbackFormat,
+  includeSourceFormat = true,
+  ...configOptions
+} = Astro.props as ImageConfig;
+
+const label = `Image at ${src} optimized in`;
+
+console.time(label);
+const { sources, fallbacks, sizes } = await getImage(
+  src,
+  format,
+  breakpoints,
+  placeholder,
+  artDirectives,
+  fallbackFormat,
+  includeSourceFormat,
+  formatOptions,
+  configOptions
+);
+console.timeEnd(label);
+
+const { width, height } = sizes;
+
+const imagesrcset =
+  preload && sources.find(({ format: fmt }) => fmt === preload)?.srcset;
+const imagesizes = `(min-width: ${width}px) ${width}px, 100vw`;
+---
+
+{preload && (
+  <link
+    rel="preload"
+    as="image"
+    imagesrcset={imagesrcset}
+    imagesizes={imagesizes}
+  />
+)}
+
+{caption && `<figure class="astro-image-figure">`}
+
+<div
+  class={`astro-image-container astro-image-${layout}`}
+  style={layout === "fill"
+    ? `width: 100%; height: 100%;`
+    : layout === "fixed"
+    ? `width: ${width}px; height: ${height}px;`
+    : layout === "fullWidth"
+    ? `width: 100%; padding-top: ${(height * 100) / width}%;`
+    : null}
+>
+  {layout === "constrained" && (
+    <svg
+      {...sizes}
+      aria-hidden="true"
+      style="max-width: 100%; display: block; position: static"
+    ></svg>
+  )}
+
+  <picture>
+    {sources.map(({ media, format, src, srcset }) =>
+      src ? (
+        <img
+          src={src}
+          alt={alt}
+          {...sizes}
+          srcset={srcset}
+          loading={loading}
+          sizes={imagesizes}
+          decoding={decoding}
+          class="astro-image"
+          style={`object-fit: ${objectFit};${
+            objectPosition ? `object-position: ${objectPosition};` : ""
+          }`}
+          onload={
+            "parentElement.parentElement.lastElementChild.lastElementChild.style.opacity = 0;"
+          }
+        />
+      ) : (
+        <source
+          media={media}
+          type={`image/${format}`}
+          srcset={srcset}
+          sizes={imagesizes}
+        />
+      )
+    )}
+  </picture>
+
+  {fallbacks && (
+    <picture>
+      {fallbacks.map(({ media, src }) =>
+        media ? (
+          <source media={media} srcset={src} />
+        ) : (
+          <img
+            {...sizes}
+            src={src}
+            aria-hidden="true"
+            decoding={decoding}
+            class="astro-image-fallback"
+            style={`object-fit: ${objectFit};${
+              objectPosition ? `object-position: ${objectPosition};` : ""
+            }`}
+          />
+        )
+      )}
+    </picture>
+  )}
+</div>
+
+{caption && <figcaption class="astro-image-figcaption">{caption}</figcaption>}
+{caption && `</figure>`}

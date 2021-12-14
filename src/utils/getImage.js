@@ -1,6 +1,7 @@
+// @ts-check
+
 import crypto from "crypto";
 import getArtDirectedImages from "./getArtDirectedImages";
-import getConfigOptions from "./getConfigOptions";
 import getImageSources from "./getImageSources";
 import getProcessedImage from "./getProcessedImage";
 
@@ -31,29 +32,19 @@ export default async function (
 
   src = path;
   rest.aspect = `${imageWidth / imageHeight}`;
-
   fallbackFormat ||= imageFormat;
-
-  const { formats, requiredBreakpoints } = getConfigOptions(
-    imageWidth,
-    breakpoints,
-    format,
-    imageFormat,
-    fallbackFormat,
-    includeSourceFormat
-  );
-
-  const maxWidth = requiredBreakpoints.at(-1);
 
   const { sources, fallback } = await getImageSources(
     src,
     image,
+    format,
+    imageWidth,
+    breakpoints,
     placeholder,
+    imageFormat,
     fallbackFormat,
-    formats,
-    requiredBreakpoints,
-    maxWidth,
     formatOptions,
+    includeSourceFormat,
     rest
   );
 
@@ -68,20 +59,14 @@ export default async function (
     rest
   );
 
+  // @ts-ignore
   sources.unshift(...artDirectedImages.sources);
 
   const fallbacks = [...artDirectedImages.fallbacks, fallback];
 
-  // Generate the sizes for browser
-  const sizes = {
-    width: maxWidth,
-    height: Math.round(maxWidth / rest.aspect),
-  };
-
   const imageData = {
     sources,
     fallbacks,
-    sizes,
   };
 
   imagesData.set(hash, imageData);

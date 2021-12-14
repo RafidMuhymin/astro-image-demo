@@ -1,3 +1,5 @@
+// @ts-check
+
 import util from "util";
 import potrace from "potrace";
 import {

@@ -1,3 +1,5 @@
+// @ts-check
+
 import getBreakpoints from "./getBreakpoints";
 
 export default function getConfigOptions(
