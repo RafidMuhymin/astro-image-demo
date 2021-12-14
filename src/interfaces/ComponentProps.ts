@@ -6,6 +6,8 @@ declare interface ArtDirectives extends FormatOptions, ImageToolsConfigs {
   media: string;
   breakpoints?: number | number[];
   placeholder?: "dominantColor" | "blurred" | "tracedSVG" | "none";
+  objectFit?: "fill" | "contain" | "cover" | "none" | "scale-down";
+  objectPosition?: string;
 }
 
 export interface ComponentProps {

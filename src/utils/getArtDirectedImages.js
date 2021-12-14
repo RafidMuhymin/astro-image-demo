@@ -23,6 +23,8 @@ export default async function getArtDirectedImages(
     media,
     placeholder: directivePlaceholder,
     breakpoints: directiveBreakpoints,
+    objectFit,
+    objectPosition,
     format: directiveFormat,
     fallbackFormat: directiveFallbackFormat,
     includeSourceFormat: directiveIncludeSourceFormat,
@@ -70,11 +72,17 @@ export default async function getArtDirectedImages(
         height: Math.round(maxWidth / rest2.aspect),
       };
 
+      const object = {
+        fit: objectFit,
+        position: objectPosition,
+      };
+
       sources.push({
         media,
         format,
         srcset,
         sizes,
+        object,
       });
     }
 

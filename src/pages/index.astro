@@ -10,7 +10,12 @@ import Image from "../components/Image.astro";
       src="/src/images/elva-800w.jpg"
       alt="A father holiding his beloved daughter in his arms"
       placeholder="blurred"
-      artDirectives={[]}
+      artDirectives={[
+        {
+          media: "(max-width: 480px)",
+          src: "/src/images/elva-480w-close-portrait.jpg",
+        },
+      ]}
     />
   </body>
 </html>

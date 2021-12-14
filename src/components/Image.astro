@@ -15,7 +15,7 @@ const {
   layout = "constrained",
   placeholder = "blurred",
   artDirectives,
-  format = [],
+  format = ["avif", "webp"],
   formatOptions = {
     tracedSVG: {
       function: "trace",
@@ -88,7 +88,7 @@ ${fallbacks
 {style}
 
 {sources.length > 1 && `<picture>`}
-{sources.map(({ media, format, src, srcset, sizes }) =>
+{sources.map(({ media, format, src, srcset, sizes, object }) =>
   src ? (
     <img
       class={uuid}
@@ -100,7 +100,9 @@ ${fallbacks
       sizes={imagesizes}
       decoding={decoding}
       style={
-        `object-fit: ${objectFit}; object-position: ${objectPosition}; ` +
+        `object-fit: ${object?.fit || objectFit}; object-position: ${
+          object?.position || objectPosition
+        }; ` +
         (layout === "fill"
           ? `width: 100%; height: 100%;`
           : layout === "fixed"
