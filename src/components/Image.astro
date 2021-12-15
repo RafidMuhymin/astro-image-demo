@@ -60,13 +60,17 @@ ${images
     media
       ? `@media ${media} {
   .${uuid} {
-    background-image: url(${fallback});
+    object-fit: ${object?.fit || objectFit};
+    object-position: ${object?.position || objectPosition};
+    background-image: url(${encodeURI(fallback)});
     background-size: ${object?.fit || objectFit};
     background-position: ${object?.position || objectPosition};
   }
 }`
       : `.${uuid} {
-  background-image: url(${fallback});
+  object-fit: ${objectFit};
+  object-position: ${objectPosition};
+  background-image: url(${encodeURI(fallback)});
   background-size: ${objectFit};
   background-position: ${objectPosition};
 }`
@@ -102,16 +106,13 @@ ${images
           sizes={imagesizes}
           decoding={decoding}
           style={
-            `object-fit: ${object?.fit || objectFit}; object-position: ${
-              object?.position || objectPosition
-            }; ` +
-            (layout === "fill"
+            layout === "fill"
               ? `width: 100%; height: 100%;`
               : layout === "fixed"
               ? `width: ${width}px; height: ${height}px;`
               : layout === "fullWidth"
               ? `width: 100%; padding-top: ${(height * 100) / width}%;`
-              : "max-width: 100%; height: auto;")
+              : "max-width: 100%; height: auto;"
           }
         />
       ) : (
