@@ -61,12 +61,14 @@ ${images
       ? `@media ${media} {
   .${uuid} {
     background-image: url(${fallback});
+    background-size: ${object?.fit || objectFit};
+    background-position: ${object?.position || objectPosition};
   }
 }`
       : `.${uuid} {
   background-image: url(${fallback});
-  background-size: ${object?.fit || objectFit};
-  background-position: ${object?.position || objectPosition};
+  background-size: ${objectFit};
+  background-position: ${objectPosition};
 }`
   )
   .reverse()
