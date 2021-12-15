@@ -34,7 +34,7 @@ export default async function (
   rest.aspect = `${imageWidth / imageHeight}`;
   fallbackFormat ||= imageFormat;
 
-  const { sources, fallback } = await getImageSources(
+  const mainImage = await getImageSources(
     src,
     image,
     format,
@@ -59,17 +59,9 @@ export default async function (
     rest
   );
 
-  // @ts-ignore
-  sources.unshift(...artDirectedImages.sources);
+  const images = [...artDirectedImages, mainImage];
 
-  const fallbacks = [...artDirectedImages.fallbacks, fallback].reverse();
+  imagesData.set(hash, images);
 
-  const imageData = {
-    sources,
-    fallbacks,
-  };
-
-  imagesData.set(hash, imageData);
-
-  return imageData;
+  return images;
 }

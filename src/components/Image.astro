@@ -29,7 +29,7 @@ const {
 const label = `Image at ${src} optimized in`;
 
 console.time(label);
-const { sources, fallbacks } = await getImage(
+const images = await getImage(
   src,
   format,
   breakpoints,
@@ -47,27 +47,29 @@ const uuid = `astro-image-${crypto
   .toString("hex")
   .toUpperCase()}`;
 
-const { width, height } = sources.at(-1).sizes;
+const { width, height } = images.at(-1).sizes;
 
 const imagesrcset =
-  preload && sources.find(({ format: fmt }) => fmt === preload)?.srcset;
+  preload &&
+  images.at(-1).sources.find(({ format: fmt }) => fmt === preload)?.srcset;
 const imagesizes = `(min-width: ${width}px) ${width}px, 100vw`;
 
 const style = `<style>
-${fallbacks
-  .map(({ src, media }) =>
+${images
+  .map(({ media, fallback, object }) =>
     media
       ? `@media ${media} {
   .${uuid} {
-    background-image: url(${src});
+    background-image: url(${fallback});
   }
 }`
       : `.${uuid} {
-  background-image: url(${src});
-  background-size: ${objectFit};
-  background-position: ${objectPosition};
+  background-image: url(${fallback});
+  background-size: ${object?.fit || objectFit};
+  background-position: ${object?.position || objectPosition};
 }`
   )
+  .reverse()
   .join("\n\n")}
 </style>`;
 ---
@@ -83,39 +85,43 @@ ${fallbacks
 
 {style}
 
-{sources.length > 1 && `<picture>`}
-{sources.map(({ media, format, src, srcset, sizes, object }) =>
-  src ? (
-    <img
-      class={uuid}
-      src={src}
-      alt={alt}
-      {...sizes}
-      srcset={srcset}
-      loading={loading}
-      sizes={imagesizes}
-      decoding={decoding}
-      style={
-        `object-fit: ${object?.fit || objectFit}; object-position: ${
-          object?.position || objectPosition
-        }; ` +
-        (layout === "fill"
-          ? `width: 100%; height: 100%;`
-          : layout === "fixed"
-          ? `width: ${width}px; height: ${height}px;`
-          : layout === "fullWidth"
-          ? `width: 100%; padding-top: ${(height * 100) / width}%;`
-          : "max-width: 100%; height: auto;")
-      }
-    />
-  ) : (
-    <source
-      {...sizes}
-      media={media}
-      type={`image/${format}`}
-      srcset={srcset}
-      sizes={imagesizes}
-    />
-  )
-)}
-{sources.length > 1 && `</picture>`}
+{images.length > 1 && `<picture>`}
+{images.map(({ media, sources, sizes, object }) => (
+  <>
+    {sources.map(({ format, src, srcset }) =>
+      src ? (
+        <img
+          class={uuid}
+          src={src}
+          alt={alt}
+          {...sizes}
+          srcset={srcset}
+          loading={loading}
+          sizes={imagesizes}
+          decoding={decoding}
+          style={
+            `object-fit: ${object?.fit || objectFit}; object-position: ${
+              object?.position || objectPosition
+            }; ` +
+            (layout === "fill"
+              ? `width: 100%; height: 100%;`
+              : layout === "fixed"
+              ? `width: ${width}px; height: ${height}px;`
+              : layout === "fullWidth"
+              ? `width: 100%; padding-top: ${(height * 100) / width}%;`
+              : "max-width: 100%; height: auto;")
+          }
+        />
+      ) : (
+        <source
+          {...sizes}
+          media={media}
+          type={`image/${format}`}
+          srcset={srcset}
+          sizes={imagesizes}
+        />
+      )
+    )}
+  </>
+))}
+{images.length > 1 && `</picture>`}

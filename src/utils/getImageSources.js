@@ -44,20 +44,19 @@ export default async function getImageSources(
       )}&format=${format}${params}`
     );
 
-    const sizes = {
-      width: maxWidth,
-      height: Math.round(maxWidth / rest.aspect),
-    };
-
     sources.push({
       src: format === fallbackFormat && fallbackImageSource,
       format,
       srcset,
-      sizes,
     });
   }
 
-  const fallbackSrc = await getFallbackImage(
+  const sizes = {
+    width: maxWidth,
+    height: Math.round(maxWidth / rest.aspect),
+  };
+
+  const fallback = await getFallbackImage(
     placeholder,
     image,
     fallbackFormat,
@@ -65,9 +64,5 @@ export default async function getImageSources(
     rest
   );
 
-  const fallback = { src: fallbackSrc };
-
-  const imageSource = { sources, fallback };
-
-  return imageSource;
+  return { sources, sizes, fallback };
 }

@@ -15,8 +15,7 @@ export default async function getArtDirectedImages(
   formatOptions,
   rest
 ) {
-  const sources = [];
-  const fallbacks = [];
+  const images = [];
 
   for (const {
     src,
@@ -53,6 +52,8 @@ export default async function getArtDirectedImages(
 
     const maxWidth = requiredBreakpoints.at(-1);
 
+    const sources = [];
+
     for (const format of formats) {
       const params = stringifyParams({
         ...rest,
@@ -67,39 +68,38 @@ export default async function getArtDirectedImages(
         )}&format=${format}${params}`
       );
 
-      const sizes = {
-        width: maxWidth,
-        height: Math.round(maxWidth / rest2.aspect),
-      };
-
-      const object = {
-        fit: objectFit,
-        position: objectPosition,
-      };
-
       sources.push({
-        media,
         format,
         srcset,
-        sizes,
-        object,
       });
     }
 
-    fallbacks.push({
+    const sizes = {
+      width: maxWidth,
+      height: Math.round(maxWidth / rest2.aspect),
+    };
+
+    const object = {
+      fit: objectFit,
+      position: objectPosition,
+    };
+
+    const fallback = await getFallbackImage(
+      directivePlaceholder || placeholder,
+      image,
+      imageFormat,
+      { ...formatOptions, ...directiveFormatOptions },
+      { ...rest, ...rest2 }
+    );
+
+    images.push({
       media,
-      src: await getFallbackImage(
-        directivePlaceholder || placeholder,
-        image,
-        imageFormat,
-        { ...formatOptions, ...directiveFormatOptions },
-        { ...rest, ...rest2 }
-      ),
+      sources,
+      sizes,
+      object,
+      fallback,
     });
   }
 
-  return {
-    sources,
-    fallbacks,
-  };
+  return images;
 }
