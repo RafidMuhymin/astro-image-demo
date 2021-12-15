@@ -42,8 +42,6 @@ const { sources, fallbacks } = await getImage(
 );
 console.timeEnd(label);
 
-fallbacks.reverse();
-
 const uuid = `astro-image-${crypto
   .randomBytes(4)
   .toString("hex")
@@ -62,8 +60,6 @@ ${fallbacks
       ? `@media ${media} {
   .${uuid} {
     background-image: url(${src});
-    background-size: ${objectFit};
-    background-position: ${objectPosition};
   }
 }`
       : `.${uuid} {

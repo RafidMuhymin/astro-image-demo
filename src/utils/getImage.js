@@ -62,7 +62,7 @@ export default async function (
   // @ts-ignore
   sources.unshift(...artDirectedImages.sources);
 
-  const fallbacks = [...artDirectedImages.fallbacks, fallback];
+  const fallbacks = [...artDirectedImages.fallbacks, fallback].reverse();
 
   const imageData = {
     sources,
