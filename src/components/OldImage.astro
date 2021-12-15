@@ -30,7 +30,7 @@ const {
 const label = `Image at ${src} optimized in`;
 
 console.time(label);
-const { sources, fallbacks, sizes } = await getImage(
+const images = await getImage(
   src,
   format,
   breakpoints,
@@ -43,10 +43,11 @@ const { sources, fallbacks, sizes } = await getImage(
 );
 console.timeEnd(label);
 
-const { width, height } = sizes;
+const { width, height } = images.at(-1).sizes;
 
 const imagesrcset =
-  preload && sources.find(({ format: fmt }) => fmt === preload)?.srcset;
+  preload &&
+  images.at(-1).sources.find(({ format: fmt }) => fmt === preload)?.srcset;
 const imagesizes = `(min-width: ${width}px) ${width}px, 100vw`;
 ---
 
@@ -73,62 +74,64 @@ const imagesizes = `(min-width: ${width}px) ${width}px, 100vw`;
 >
   {layout === "constrained" && (
     <svg
-      {...sizes}
+      width={width}
+      height={height}
       aria-hidden="true"
       style="max-width: 100%; display: block; position: static"
     ></svg>
   )}
+  <picture>
+    {images.map(({ media, sources, sizes }) => (
+      <>
+        {sources.map(({ src, srcset, format }) =>
+          src ? (
+            <img
+              src={src}
+              alt={alt}
+              {...sizes}
+              srcset={srcset}
+              loading={loading}
+              sizes={imagesizes}
+              decoding={decoding}
+              class="astro-image"
+              style={`object-fit: ${objectFit};${
+                objectPosition ? `object-position: ${objectPosition};` : ""
+              }`}
+              onload={
+                "parentElement.parentElement.lastElementChild.lastElementChild.style.opacity = 0;"
+              }
+            />
+          ) : (
+            <source
+              media={media}
+              type={`image/${format}`}
+              srcset={srcset}
+              sizes={imagesizes}
+            />
+          )
+        )}
+      </>
+    ))}
+  </picture>
 
   <picture>
-    {sources.map(({ media, format, src, srcset }) =>
-      src ? (
+    {images.map(({ media, fallback, sizes }) =>
+      media ? (
+        <source media={media} srcset={fallback} />
+      ) : (
         <img
-          src={src}
-          alt={alt}
           {...sizes}
-          srcset={srcset}
-          loading={loading}
-          sizes={imagesizes}
+          src={fallback}
+          aria-hidden="true"
           decoding={decoding}
-          class="astro-image"
+          class="astro-image-fallback"
           style={`object-fit: ${objectFit};${
             objectPosition ? `object-position: ${objectPosition};` : ""
           }`}
-          onload={
-            "parentElement.parentElement.lastElementChild.lastElementChild.style.opacity = 0;"
-          }
-        />
-      ) : (
-        <source
-          media={media}
-          type={`image/${format}`}
-          srcset={srcset}
-          sizes={imagesizes}
         />
       )
     )}
   </picture>
-
-  {fallbacks && (
-    <picture>
-      {fallbacks.map(({ media, src }) =>
-        media ? (
-          <source media={media} srcset={src} />
-        ) : (
-          <img
-            {...sizes}
-            src={src}
-            aria-hidden="true"
-            decoding={decoding}
-            class="astro-image-fallback"
-            style={`object-fit: ${objectFit};${
-              objectPosition ? `object-position: ${objectPosition};` : ""
-            }`}
-          />
-        )
-      )}
-    </picture>
-  )}
 </div>
 
 {caption && <figcaption class="astro-image-figcaption">{caption}</figcaption>}
