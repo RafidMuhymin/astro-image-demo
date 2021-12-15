@@ -89,7 +89,7 @@ declare interface ImageToolsConfigs {
   brightness?: number;
   width?: number;
   height?: number;
-  aspect?: number;
+  aspect?: number | string;
   background?: string;
   tint?: string;
   blur?: number | boolean;

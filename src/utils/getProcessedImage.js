@@ -17,6 +17,9 @@ export default async (src, configOptions) => {
   src = src.slice(0, src.lastIndexOf(search));
   configOptions = { ...paramOptions, ...configOptions };
 
+  configOptions.aspect &&= `${configOptions.aspect}`;
+  configOptions.ar &&= `${configOptions.ar}`;
+
   const { width, height, aspect, w, h, ar, ...rest } = configOptions;
 
   if (src.match("(http://|https://|data:image/).*")) {
