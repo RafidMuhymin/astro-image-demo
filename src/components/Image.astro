@@ -93,7 +93,7 @@ ${images
 
 {images.length > 1 && `<picture>`}
 {images.map(({ media, sources, sizes, object }) => (
-  <>
+  <Fragment>
     {sources.map(({ format, src, srcset }) =>
       src ? (
         <img
@@ -126,6 +126,6 @@ ${images
         />
       )
     )}
-  </>
+  </Fragment>
 ))}
 {images.length > 1 && `</picture>`}
