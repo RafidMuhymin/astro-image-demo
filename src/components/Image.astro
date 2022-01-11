@@ -54,30 +54,7 @@ const imagesrcset =
   images.at(-1).sources.find(({ format: fmt }) => fmt === preload)?.srcset;
 const imagesizes = `(min-width: ${width}px) ${width}px, 100vw`;
 
-const style = `<style>
-${images
-  .map(({ media, fallback, object }) =>
-    media
-      ? `@media ${media} {
-  .${uuid} {
-    object-fit: ${object?.fit || objectFit};
-    object-position: ${object?.position || objectPosition};
-    background-image: url('${encodeURI(fallback)}');
-    background-size: ${object?.fit || objectFit};
-    background-position: ${object?.position || objectPosition};
-  }
-}`
-      : `.${uuid} {
-  object-fit: ${objectFit};
-  object-position: ${objectPosition};
-  background-image: url('${encodeURI(fallback)}');
-  background-size: ${objectFit};
-  background-position: ${objectPosition};
-}`
-  )
-  .reverse()
-  .join("\n\n")}
-</style>`;
+const StyleTag = "style";
 ---
 
 {preload && (
@@ -89,7 +66,30 @@ ${images
   />
 )}
 
-{style}
+<StyleTag>
+  {images
+    .map(({ media, fallback, object }) =>
+      media
+        ? `@media ${media} {
+  .${uuid} {
+    object-fit: ${object?.fit || objectFit};
+    object-position: ${object?.position || objectPosition};
+    background-image: url('${encodeURI(fallback)}');
+    background-size: ${object?.fit || objectFit};
+    background-position: ${object?.position || objectPosition};
+  }
+}`
+        : `.${uuid} {
+  object-fit: ${objectFit};
+  object-position: ${objectPosition};
+  background-image: url('${encodeURI(fallback)}');
+  background-size: ${objectFit};
+  background-position: ${objectPosition};
+}`
+    )
+    .reverse()
+    .join("\n\n")}
+</StyleTag>
 
 {images.length > 1 && `<picture>`}
 {images.map(({ media, sources, sizes, object }) => (
