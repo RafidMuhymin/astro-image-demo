@@ -10,12 +10,12 @@ import {
   loadImage,
 } from "./imagetools-core";
 
-export default async (src, configOptions) => {
+export default async (src, configOptions, globalConfigOptions) => {
   const { search, searchParams } = parseURL(src);
   const paramOptions = Object.fromEntries(searchParams);
 
   src = src.slice(0, src.lastIndexOf(search));
-  configOptions = { ...paramOptions, ...configOptions };
+  configOptions = { ...globalConfigOptions, ...paramOptions, ...configOptions };
 
   configOptions.aspect &&= `${configOptions.aspect}`;
   configOptions.ar &&= `${configOptions.ar}`;

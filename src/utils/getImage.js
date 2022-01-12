@@ -16,7 +16,8 @@ export default async function (
   fallbackFormat,
   includeSourceFormat,
   formatOptions,
-  configOptions
+  configOptions,
+  globalConfigOptions
 ) {
   const hash = crypto
     .createHash("sha256")

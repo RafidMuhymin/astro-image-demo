@@ -2,6 +2,7 @@
 import crypto from "crypto";
 import type ImageConfig from "/src/interfaces/ImageConfig.ts";
 import getImage from "../utils/getImage.js";
+import astroConfig from "/astro.config";
 
 const {
   src,
@@ -38,7 +39,8 @@ const images = await getImage(
   fallbackFormat,
   includeSourceFormat,
   formatOptions,
-  configOptions
+  configOptions,
+  astroConfig.image
 );
 console.timeEnd(label);
 
