@@ -29,7 +29,7 @@ export default async function (
   }
 
   const { path, rest, image, imageWidth, imageHeight, imageFormat } =
-    await getProcessedImage(src, configOptions);
+    await getProcessedImage(src, configOptions, globalConfigOptions);
 
   src = path;
   rest.aspect = `${imageWidth / imageHeight}`;
