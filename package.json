@@ -18,6 +18,6 @@
     "@astrojs/svelte": "^0.0.2",
     "@astrojs/vue": "^0.0.2",
     "astro": "^1.0.0-beta.12",
-    "astro-imagetools": "workspace:^0.5.4"
+    "astro-imagetools": "^0.5.4"
   }
 }
