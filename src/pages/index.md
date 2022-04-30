@@ -1,5 +1,5 @@
 ---
-path: index.astro
+path: index.md
 layout: ../layouts/MainLayout.astro
 ---
 
@@ -51,7 +51,7 @@ The `placeholder` property tells the image what to show while loading.
 
 The following is an example of a reference to an internal image.
 
-![A father holding his beloved daughter in his arms](/src/images/elva-800w.jpg)
+![A father holding his beloved daughter in his arms](../images//elva-800w.jpg)
 
 <hr />
 
